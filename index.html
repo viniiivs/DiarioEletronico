@@ -81,7 +81,7 @@
         for (var i = 3; i < 9; i++) {
             var cont = 0;
             for (var j = 0; j < valor; j++) {
-                if (document.getElementById('input' + i + '-' + j).value === "F")
+                if (document.getElementById('input' + i + '-' + j).value === "F" || document.getElementById('input' + i + '-' + j).value === "f")
                     cont++;
             }
             aux.push(cont);
