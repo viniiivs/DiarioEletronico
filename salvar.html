@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <link href="./css/bootstrap.css" rel="stylesheet">
+    <link href="./css/bootstrap-grid.css" rel="stylesheet">
+    <link href="./css/bootstrap-reboot.css" rel="stylesheet">
+    <link rel="import" href="index.html">
+    <meta charset="utf-8">
+    <title>Diário Eletrônico</title>
+</head>
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .form-control {
+        background: transparent;
+        border: none;
+        display: flex;
+    }
+</style>
+<script>
+    function inserirLinhaTabela() {
+
+        var valor = document.getElementById("valor").value;
+        var um = document.getElementById("1");
+
+        document.getElementById("meses").setAttribute("colspan", valor);
+
+        window.location.href("salvar.html");
+
+        for (var i = 2; i < 9; i++) {
+            var linhaAtual = document.getElementById(i);
+            for (var j = 0; j < valor; j++) {
+                var novaColuna = linhaAtual.insertCell();
+                novaColuna.innerHTML = '<input class="form-control" name="qtde" id="input' + i + '-' + j + '" size="1" required="">';
+            }
+        }
+
+    }
+
+    function salvar() {
+        var valor = document.getElementById("valor").value;
+        var aux = [];
+        for (var i = 3; i < 9; i++) {
+            var cont = 0;
+            for (var j = 0; j < valor; j++) {
+                if (document.getElementById('input' + i + '-' + j).value === "F")
+                    cont++;
+            }
+            aux.push(cont);
+        }
+        alert(aux);
+    }
+</script>
+
+<body>
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+        <a class="navbar-brand" href="#">Diário Eletrônico</a>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="salvar.html">Configurações</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Disabled</a>
+
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="div_aba2" class="jumbotron" style="display:block;">
+        <form id="form2" name="form2" onsubmit="window.location.href = 'index.html'; return false;">
+            <input type="text" id="valor">
+            <input type="submit" value="Salvar Configurações">
+        </form>
+    </div>
+</body>
+
+</html>
