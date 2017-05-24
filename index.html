@@ -66,6 +66,9 @@
         document.getElementById("saveBtn").style.display = 'block';
         document.getElementById("step1").style.display = 'none';
         document.getElementById("step2").style.display = 'block';
+        document.getElementById("step3").style.display = 'block';
+        document.getElementById("step4").style.display = 'block';
+        document.getElementById("step5").style.display = 'block';
         var valor = parseInt(document.getElementById("valor").value);
         var tabela = document.getElementById("tabela");
         var um = document.getElementById("1");
@@ -171,11 +174,28 @@
         }
 
         for (var i = 3; i < 9; i++) {
-            for (var j = 0; j < valor; j++) {
-                if (document.getElementById('falta' + i + '-' + j).value > valor / 4)
+            var erro = false;
+            for (j = valor + 2; j < valor + 3; j++) {
+                if (document.getElementById('nota' + i + '-' + j).value < 4.00) {
                     document.getElementById(i).setAttribute("class", "bg-danger");
-
+                    erro = true;
+                } else if (document.getElementById('nota' + i + '-' + j).value < 6.00) {
+                    document.getElementById(i).setAttribute("class", "bg-warning");
+                    erro = true;
+                } else
+                    document.getElementById(i).setAttribute("class", "bg-success");
             }
+
+            if (document.getElementById('falta' + i + '-' + 0).value > valor / 4)
+                document.getElementById(i).setAttribute("class", "bg-danger");
+            else
+            if (!erro)
+                document.getElementById(i).setAttribute("class", "bg-success");
+        }
+
+        for (var i = 3; i < 9; i++) {
+
+
         }
 
         document.getElementById("saveBtn").style.display = 'none';
@@ -194,7 +214,7 @@
                     <a class="nav-link" href="#config" onclick="mostrar_abas(this);" id="mostra_aba2">Configurações</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Disabled</a>
+                    <a class="nav-link" href="#"></a>
 
                 </li>
             </ul>
@@ -268,6 +288,10 @@
         </div>
 
         <input type="button" value="Salvar" id="saveBtn" style="display: none" onclick="salvar();">
+        </br>
+        <p id="step3" style="display: none">Vermelho = Reprovado por falta</p>
+        <p id="step4" style="display: none">Amarelo = Exame</p>
+        <p id="step5" style="display: none">Verde = Aprovado</p>
     </div>
 
     <div id="div_aba2" class="jumbotron" style="display:none;">
