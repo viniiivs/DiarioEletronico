@@ -82,7 +82,7 @@
             var linhaAtual = document.getElementById(i);
             for (var j = 0; j < valor; j++) {
                 var novaColuna = linhaAtual.insertCell();
-                novaColuna.innerHTML = '<input type="number" style="-webkit-appearance: none;" class="form-control" name="qtde" id="input' + i + '-' + j + '" min="1" max="31"  required="">';
+                novaColuna.innerHTML = '<input class="form-control" name="qtde" id="input' + i + '-' + j + '" min="1" max="31" size="2" required="">';
             }
         }
 
@@ -160,37 +160,64 @@
         cont = 0;
 
         Notas = document.getElementById(1).insertCell();
-        Notas.outerHTML = '<th id="notas">Nota Final</th>'
+        Notas.outerHTML = '<th id="notas">Média</th>'
 
 
         for (var i = 3; i < 9; i++) {
             var linhaAtual = document.getElementById(i);
             for (j = valor + 2; j < valor + 3; j++) {
                 var novaColuna = linhaAtual.insertCell();
-                novaColuna.innerHTML = '<input type="number" step="0.5" class="form-control" id="nota' + i + '-' + j + '" value="' + aux2[cont].toFixed(2) + '" align="center" size ="2" maxlength="2" readonly/>';
+                novaColuna.innerHTML = '<input class="form-control" id="nota' + i + '-' + j + '" value="' + aux2[cont].toFixed(2) + '" align="center" size ="2" maxlength="2" readonly/>';
                 cont++;
             }
 
         }
 
+        var Status = document.getElementById(1).insertCell();
+        Status.outerHTML = '<th id="status">STATUS</th>'
+
         for (var i = 3; i < 9; i++) {
             var erro = false;
+            var exame = false;
+            var falt = false;
+            var not = false;
+            var linhaAtual = document.getElementById(i);
+            if (document.getElementById('falta' + i + '-' + 0).value > valor / 4) {
+                falt = true;
+            }
             for (j = valor + 2; j < valor + 3; j++) {
                 if (document.getElementById('nota' + i + '-' + j).value < 4.00) {
                     document.getElementById(i).setAttribute("class", "bg-danger");
+
+                    if (!falt)
+                        linhaAtual.insertCell().innerHTML = "REPROVADO POR NOTA";
+                    else {
+                        linhaAtual.insertCell().innerHTML = "REPROVADO POR NOTA E FALTA";
+                        not = true;
+                    }
                     erro = true;
                 } else if (document.getElementById('nota' + i + '-' + j).value < 6.00) {
                     document.getElementById(i).setAttribute("class", "bg-warning");
-                    erro = true;
-                } else
-                    document.getElementById(i).setAttribute("class", "bg-success");
-            }
 
-            if (document.getElementById('falta' + i + '-' + 0).value > valor / 4)
+                    if (!falt)
+                        linhaAtual.insertCell().innerHTML = "EXAME";
+
+                    erro = true;
+                    exame = true;
+                } else {
+                    document.getElementById(i).setAttribute("class", "bg-success");
+                }
+            }
+            if (document.getElementById('falta' + i + '-' + 0).value > valor / 4) {
                 document.getElementById(i).setAttribute("class", "bg-danger");
-            else
-            if (!erro)
+                if (!not)
+                    linhaAtual.insertCell().innerHTML = "REPROVADO POR FALTA";
+                falt = true;
+            } else
+            if (!erro) {
                 document.getElementById(i).setAttribute("class", "bg-success");
+                linhaAtual.insertCell().innerHTML = "APROVADO";
+            }
         }
 
         for (var i = 3; i < 9; i++) {
