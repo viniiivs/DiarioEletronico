@@ -50,9 +50,23 @@
         }
     }
 
+
+    function p(obj) {
+        document.getElementById(obj.id).setAttribute("value", '.');
+    }
+
+    function f(obj) {
+        document.getElementById(obj.id).setAttribute("value", 'F');
+    }
+
+
+
     function inserirLinhaTabela() {
         document.getElementById('mostra_aba2').setAttribute("onclick", 'disabled');
-        var valor = document.getElementById("valor").value;
+        document.getElementById("saveBtn").style.display = 'block';
+        document.getElementById("step1").style.display = 'none';
+        document.getElementById("step2").style.display = 'block';
+        var valor = parseInt(document.getElementById("valor").value);
         var tabela = document.getElementById("tabela");
         var um = document.getElementById("1");
 
@@ -61,22 +75,50 @@
         document.getElementById('div_aba2').style.display = "none";
         document.getElementById('div_aba1').style.display = "block";
 
-
-
-
-
-        for (var i = 2; i < 9; i++) {
+        for (var i = 2; i < 3; i++) {
             var linhaAtual = document.getElementById(i);
             for (var j = 0; j < valor; j++) {
                 var novaColuna = linhaAtual.insertCell();
-                novaColuna.innerHTML = '<input class="form-control" name="qtde" id="input' + i + '-' + j + '" size="1" required="">';
+                novaColuna.innerHTML = '<input type="number" style="-webkit-appearance: none;" class="form-control" name="qtde" id="input' + i + '-' + j + '" min="1" max="31"  required="">';
             }
         }
+
+        for (var i = 3; i < 9; i++) {
+            var linhaAtual = document.getElementById(i);
+            for (var j = 0; j < valor; j++) {
+                var novaColuna = linhaAtual.insertCell();
+                novaColuna.innerHTML = '<input type="button" class="form-control" name="qtde" id="input' + i + '-' + j + '" size="1" value="." onclick="p(this);" ondblclick="f(this);" >';
+            }
+        }
+        var c = '1';
+        for (var i = 2; i < 3; i++) {
+            var linhaAtual = document.getElementById(i);
+            for (var j = valor + 1; j < valor + 4; j++) {
+
+                var novaColuna = linhaAtual.insertCell();
+                novaColuna.innerHTML = 'T' + c;
+                c++;
+            }
+        }
+
+
+        var Notas = document.getElementById(1).insertCell();
+        Notas.outerHTML = '<th id="aval" colspan="3">Avaliações</th>'
+        for (var i = 3; i < 9; i++) {
+            var linhaAtual = document.getElementById(i);
+            for (var j = valor + 1; j < valor + 4; j++) {
+                var novaColuna = linhaAtual.insertCell();
+                novaColuna.innerHTML = '<input type="number" step="0.5" min="0" max="10" class="form-control" id="notas' + i + '-' + j + '" value="0" required/>';
+
+            }
+        }
+
+
 
     }
 
     function salvar() {
-        var valor = document.getElementById("valor").value;
+        var valor = parseInt(document.getElementById("valor").value);
         var aux = [];
         for (var i = 3; i < 9; i++) {
             var cont = 0;
@@ -94,12 +136,49 @@
             var linhaAtual = document.getElementById(i);
             for (j = 0; j < 1; j++) {
                 var novaColuna = linhaAtual.insertCell();
-                novaColuna.innerHTML = aux[cont];
+                novaColuna.innerHTML = '<input class="form-control" id="falta' + i + '-' + j + '" value="' + parseInt(aux[cont]) + '" align="center" size ="2" maxlength="2" readonly/>';
                 cont++;
             }
 
         }
-        document.getElementById("saveBtn").disabled = true;
+
+        var aux2 = [];
+        for (var i = 3; i < 9; i++) {
+            var resultado = 0;
+            cont = 0;
+            for (var j = valor + 1; j < valor + 4; j++) {
+                resultado = parseFloat(document.getElementById('notas' + i + '-' + j).value) + resultado;
+                cont++;
+            }
+            aux2.push(resultado / 3);
+
+        }
+
+        cont = 0;
+
+        Notas = document.getElementById(1).insertCell();
+        Notas.outerHTML = '<th id="notas">Nota Final</th>'
+
+
+        for (var i = 3; i < 9; i++) {
+            var linhaAtual = document.getElementById(i);
+            for (j = valor + 2; j < valor + 3; j++) {
+                var novaColuna = linhaAtual.insertCell();
+                novaColuna.innerHTML = '<input type="number" step="0.5" class="form-control" id="nota' + i + '-' + j + '" value="' + aux2[cont].toFixed(2) + '" align="center" size ="2" maxlength="2" readonly/>';
+                cont++;
+            }
+
+        }
+
+        for (var i = 3; i < 9; i++) {
+            for (var j = 0; j < valor; j++) {
+                if (document.getElementById('falta' + i + '-' + j).value > valor / 4)
+                    document.getElementById(i).setAttribute("class", "bg-danger");
+
+            }
+        }
+
+        document.getElementById("saveBtn").style.display = 'none';
     }
 </script>
 
@@ -123,6 +202,8 @@
     </nav>
 
     <div id="div_aba1" class="jumbotron" style="display:block;">
+        <p id="step1">Clique na guia Configurações para definir a quantidade de aulas no semestre</p>
+        <p id="step2" style="display: none">Clique duas vezes para dar falta para um aluno, e uma vez para tirar a falta. Após apertar no botão Salvar será necessário recarregar a página para iniciar novamente.</p>
         <div class="table-responsive">
             <table class="table table-sm table-striped table-bordered table-hover table-responsive" id="tabela">
                 <thead class="thead-inverse">
@@ -186,18 +267,17 @@
             </table>
         </div>
 
-        <form onsubmit="salvar()">
-            <input type="submit" value="Salvar" id="saveBtn">
-        </form>
+        <input type="button" value="Salvar" id="saveBtn" style="display: none" onclick="salvar();">
     </div>
 
     <div id="div_aba2" class="jumbotron" style="display:none;">
-        <form id="form2" name="form2" onsubmit="inserirLinhaTabela();">
-            <input type="text" id="valor">
-            <input type="submit" id="submitBtn" value="Salvar Configurações">
-        </form>
+        <p>Insira o número de aulas no semestre</p>
+        </br>
+        <input type="text" id="valor">
+        <input type="button" id="Btn1" value="Salvar Configurações" onclick="inserirLinhaTabela();">
     </div>
     <div id="div_aba3" class="jumbotron" style="display:none;">
+        <input type="number" step="0.01" style="-webkit-appearance: none;" />
 
     </div>
 </body>
